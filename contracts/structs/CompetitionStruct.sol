@@ -22,6 +22,11 @@ library CompetitionStruct {
         address player;
     }
 
+    struct Voter{
+        uint256 tickets;
+        bool isWithdraw;
+    }
+
     struct Competition{
         address host;
         uint256 totalCoins;

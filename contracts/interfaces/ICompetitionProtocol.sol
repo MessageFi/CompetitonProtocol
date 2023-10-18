@@ -4,10 +4,12 @@ pragma solidity ^0.8.17;
 import "../structs/CompetitionStruct.sol";
 
 interface ICompetitionProtocol{
-
+    error DuplicateWithdraw();
+    error NoAccess();
     error InvalidCandidate();
     error InvalidCalculator();
     error EmptyRewards();
+    error MutipleRewards();
     error NotHost();
     error InvalidTickets();
     error InvalidRewards();
@@ -16,6 +18,7 @@ interface ICompetitionProtocol{
     error CompetitionNotOngoing();
     error CompetitionStarted();
     error CompetitionEnded();
+    error CompetitionNotEnd();
 
     event NewCompetition(uint256 indexed id, address host);
 
@@ -27,6 +30,11 @@ interface ICompetitionProtocol{
 
     event WinnerChanged(uint256 indexed id);
 
+    event WithdrawByPlayer(uint256 indexed id, uint256 candidate, address to, uint256 rewards, uint256 coins);
+
+    event WithdrawByVoter(uint256 indexed id, uint256 candidate, address to, uint256 rewards, uint256 coins);
+
+
     // create a competition
     function create(address ticketCoin, address rewardCoin, uint256[] calldata rewards,
      uint64 startTime, uint64 endTime, CompetitionStruct.Mode mode, uint64 proportionToPlayer) external returns(uint256 id);
@@ -37,7 +45,8 @@ interface ICompetitionProtocol{
 
     function vote(uint256 id, uint256 candidate, uint256 tickets) external;
 
-    function winners(uint256 id) view external returns (CompetitionStruct.Candidate[] memory);
+    // withdraw tickets and rewards
+    function withdrawByPlayer(uint256 id, uint256 candidate, address to) external;
 
-    function withdrawRewards(uint256 id, uint256 candidate) external;
+    function withdrawByVoter(uint256 id, uint256 candidate, address to) external;
 }

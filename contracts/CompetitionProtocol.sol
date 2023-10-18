@@ -42,9 +42,11 @@ contract CompetitionProtocol is
     mapping(uint256 => mapping(uint256 => CompetitionStruct.Candidate))
         public candidateMapping;
     // address => competition => candidate => coins;
-    mapping(address => mapping(uint256 => mapping(uint256 => uint256))) voterMapping;
+    mapping(address => mapping(uint256 => mapping(uint256 => CompetitionStruct.Voter))) voterMapping;
     // white coins list
     mapping(address => bool) public whiteCoins;
+    // competition => candidate => reward status
+    mapping(uint256 => mapping(uint256 => bool)) public rewardIsWithdraw;
 
     function initialize() public initializer {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
@@ -70,6 +72,9 @@ contract CompetitionProtocol is
         if (rewards.length == 0 || rewards[0] == 0) {
             revert EmptyRewards();
         }
+        if (rewards.length > 1 && mode == CompetitionStruct.Mode.PROPORTION) {
+            revert MutipleRewards();
+        }
 
         uint256 totalRewards;
         for (uint i = 0; i < rewards.length; ++i) {
@@ -90,7 +95,7 @@ contract CompetitionProtocol is
         c.endTime = endTime;
         c.mode = mode;
         c.proportionToPlayer = proportionToPlayer;
-        if(mode != CompetitionStruct.Mode.PROPORTION){
+        if (mode != CompetitionStruct.Mode.PROPORTION) {
             c.winners = new uint256[](rewards.length);
         }
 
@@ -180,11 +185,14 @@ contract CompetitionProtocol is
             );
         }
         c.totalCoins += tickets;
-
+        voterMapping[_msgSender()][id][candidate].tickets = tickets;
         emit Vote(id, candidate, _msgSender(), tickets);
     }
 
-    function realTickets(uint256 id, uint256 coins) public view returns (uint256) {
+    function realTickets(
+        uint256 id,
+        uint256 coins
+    ) public view returns (uint256) {
         if (address(calculatorMapping[id]) != address(0)) {
             return calculatorMapping[id].calculateTickets(coins);
         }
@@ -197,7 +205,7 @@ contract CompetitionProtocol is
         uint256 tickets
     ) internal {
         uint256[] memory winnerArray = competitionMapping[id].winners;
-        for (uint i = 0; i < winnerArray.length; i++) {
+        for (uint i = 0; i < winnerArray.length; ++i) {
             if (winnerArray[i] == 0) {
                 winnerArray[i] = candidate;
                 emit WinnerChanged(id);
@@ -208,7 +216,7 @@ contract CompetitionProtocol is
                 realTickets(id, candidateMapping[id][winnerArray[i]].tickets)
             ) {
                 // insert and move
-                for (uint j = i; j < winnerArray.length; j++) {
+                for (uint j = i; j < winnerArray.length; ++j) {
                     uint cj = winnerArray[j];
                     winnerArray[j] = candidate;
                     candidate = cj;
@@ -220,11 +228,125 @@ contract CompetitionProtocol is
         competitionMapping[id].winners = winnerArray;
     }
 
-    function winners(
-        uint256 id
-    ) external view returns (CompetitionStruct.Candidate[] memory) {}
+    function withdrawByPlayer(
+        uint256 id,
+        uint256 candidate,
+        address to
+    ) external nonReentrant {
+        CompetitionStruct.Competition memory c = competitionMapping[id];
+        if (block.timestamp <= c.endTime) {
+            revert CompetitionNotEnd();
+        }
+        if (rewardIsWithdraw[id][candidate]){
+            revert DuplicateWithdraw();
+        }
+        for (uint i = 0; i < c.winners.length; ++i) {
+            if (candidate == c.winners[i]) {
+                if (_msgSender() != candidateMapping[id][candidate].player) {
+                    revert NoAccess();
+                }
+                uint realRewards = (c.rewards[i] * c.proportionToPlayer) /
+                    10000;
+                SafeERC20.safeTransfer(c.rewardCoin, to, realRewards);
+                if (c.mode == CompetitionStruct.Mode.SHARE_PRO) {
+                    uint256 proportion = _rewardProportion(
+                        c.rewards,
+                        c.rewards[i]
+                    );
+                    uint sharedCoins = (c.totalCoins *
+                        proportion *
+                        c.proportionToPlayer) / 1e8;
+                    SafeERC20.safeTransfer(c.ticketCoin, to, sharedCoins);
+                    emit WithdrawByPlayer(
+                        id,
+                        candidate,
+                        to,
+                        realRewards,
+                        sharedCoins
+                    );
+                } else {
+                    emit WithdrawByPlayer(id, candidate, to, realRewards, 0);
+                }
+                rewardIsWithdraw[id][candidate] = true;
+                break;
+            }
+        }
+    }
 
-    function withdrawRewards(uint256 id, uint256 candidate) external {}
+    function withdrawByVoter(
+        uint256 id,
+        uint256 candidate,
+        address to
+    ) external nonReentrant {
+        CompetitionStruct.Competition memory c = competitionMapping[id];
+        if (block.timestamp <= c.endTime) {
+            revert CompetitionNotEnd();
+        }
+        if (voterMapping[_msgSender()][id][candidate].isWithdraw){
+            revert DuplicateWithdraw();
+        }
+        uint tickets = voterMapping[_msgSender()][id][candidate].tickets;
+        if(tickets == 0){
+            revert NoAccess();
+        }
+        voterMapping[_msgSender()][id][candidate].isWithdraw = true;
+        if(c.mode == CompetitionStruct.Mode.PROPORTION){
+
+        } else if (c.mode == CompetitionStruct.Mode.SHARE_PRO){
+            for (uint i = 0; i < c.winners.length; ++i) {
+                if (candidate == c.winners[i]) {
+                    uint rewards = c.rewards[i] * (10000 - c.proportionToPlayer) /
+                        10000;
+                    SafeERC20.safeTransfer(c.rewardCoin, to, rewards);
+                    // calculate proportion
+                    uint256 proportion = _rewardProportion(
+                        c.rewards,
+                        c.rewards[i]
+                    );
+
+                    uint sharedCoins = (c.totalCoins *
+                        proportion *
+                        (10000 - c.proportionToPlayer)) / 1e8;
+                    
+                    sharedCoins = sharedCoins * tickets / candidateMapping[id][candidate].tickets;
+                    
+                    SafeERC20.safeTransfer(c.ticketCoin, to, sharedCoins);
+
+                    emit WithdrawByVoter(id, candidate, to, rewards, tickets);
+                    break;
+                }
+            }
+        }else{
+            SafeERC20.safeTransfer(c.ticketCoin, to, tickets);
+            if(c.mode == CompetitionStruct.Mode.SHARE){
+                for (uint i = 0; i < c.winners.length; ++i) {
+                    if (candidate == c.winners[i]) {
+                        uint rewards = c.rewards[i] * (10000 - c.proportionToPlayer) /
+                            10000;
+                        SafeERC20.safeTransfer(c.rewardCoin, to, rewards);
+                        emit WithdrawByVoter(id, candidate, to, rewards, tickets);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    function _rewardProportion(
+        uint[] memory rewards,
+        uint reward
+    ) internal pure returns (uint256 proportion) {
+        proportion = (reward * 10000) / _totalRewards(rewards);
+    }
+
+    function _totalRewards(
+        uint[] memory rewards
+    ) internal pure returns (uint256 totalRewards) {
+        for (uint i = 0; i < rewards.length; ++i) {
+            totalRewards += rewards[i];
+        }
+    }
+
 
     function isCalculator(address _address) public view returns (bool) {
         // Check if the given address has the required ITicketCalculator functions
