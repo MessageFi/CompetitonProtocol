@@ -4,3 +4,4 @@ artifacts
 typechain-types
 .vscode
 bin
+cache

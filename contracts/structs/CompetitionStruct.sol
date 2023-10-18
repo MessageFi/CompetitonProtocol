@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 library CompetitionStruct {
     // In the first and second modes, voters can withdraw thier coins fully. 
@@ -16,20 +17,19 @@ library CompetitionStruct {
     }
 
     struct Candidate{
-        // usually, tickets equal coins, but not absolute
         uint256 tickets;
-        uint256 coins;
         // who can withdraw rewards
         address player;
     }
 
-    struct Events{
+    struct Competition{
         address host;
-        uint256 totalTickets;
-        uint256[] rewards;
-        address rewardCoin;
-        address voteCoin;
         uint256 totalCoins;
+        uint256[] rewards;
+        uint256[] winners;
+        IERC20 rewardCoin;
+        IERC20 ticketCoin;
+        uint256 totalCandidates;
         Mode mode;
         // 0 - 10000
         uint64 proportionToPlayer;
