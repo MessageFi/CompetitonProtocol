@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./structs/CompetitionStruct.sol";
 import "./interfaces/ICompetitionProtocol.sol";
 import "./interfaces/ITicketCalculator.sol";
+import "hardhat/console.sol";
 
 contract CompetitionProtocol is
     AccessControlUpgradeable,
@@ -63,8 +64,11 @@ contract CompetitionProtocol is
         uint64 proportionToPlayer
     ) external nonReentrant returns (uint256 id) {
         ++totalCompetitions;
-        if (startTime < block.timestamp || endTime < startTime) {
+        if (endTime <= block.timestamp) {
             revert InvalidTime();
+        }
+        if(startTime == 0){
+            startTime = uint64(block.timestamp);
         }
         // if (!whiteCoins[rewardCoin]){
         //     revert InvalidRewards();
@@ -76,10 +80,8 @@ contract CompetitionProtocol is
             revert MutipleRewards();
         }
 
-        uint256 totalRewards;
-        for (uint i = 0; i < rewards.length; ++i) {
-            totalRewards += rewards[i];
-        }
+        uint256 totalRewards = _totalRewards(rewards);
+        console.log("totalRewards: ", totalRewards);
         SafeERC20.safeTransferFrom(
             IERC20(rewardCoin),
             _msgSender(),
@@ -355,5 +357,10 @@ contract CompetitionProtocol is
         } catch {
             return false;
         }
+    }
+
+    function setWhiteCoin(address coin, bool available) external onlyRole(DEFAULT_ADMIN_ROLE){
+        whiteCoins[coin] = available;
+        emit UpdateWhiteCoin(coin, available);
     }
 }

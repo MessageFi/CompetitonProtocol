@@ -24,7 +24,7 @@ interface ICompetitionProtocol{
 
     event NewCandidate(uint256 indexed id, uint256 candidate, address player);
 
-    event UpdateWhiteCoinList(address coin, bool available);
+    event UpdateWhiteCoin(address coin, bool available);
 
     event Vote(uint256 indexed id, uint256 candidate, address voter, uint256 tickets);
 

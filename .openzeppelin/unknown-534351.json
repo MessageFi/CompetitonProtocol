@@ -1,0 +1,384 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0x0453e0686958422097ad34372dde095FC20424AB",
+    "txHash": "0x0c3508957e718404ab52bbc2dc1bf8bfd52b1a20503e328c1e5d975fa0b0802b"
+  },
+  "proxies": [
+    {
+      "address": "0x3fB51e5DFFe7194e7a768b9bbFeC4FC68235924E",
+      "txHash": "0xf9a545d6fa623aca0d5c610eb77fc573bd0523336a73d7bb914a0bde9bd7a8e4",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "06dd1d4fd6d17d26365e21b1e79946739918f357030a6ef482235e41f2b15c96": {
+      "address": "0xB9DA87a85fF8D84A91620b7D75F5Ee0379a7bb2C",
+      "txHash": "0x7599a533c378e9a0245d82c6133ee86a3c2822aea0767c04f4d20a1af70b8b35",
+      "layout": {
+        "solcVersion": "0.8.19",
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:63",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:68"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ERC165Upgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "label": "_roles",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)34_storage)",
+            "contract": "AccessControlUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:62"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "102",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "AccessControlUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:260"
+          },
+          {
+            "label": "_status",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_uint256",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_array(t_uint256)49_storage",
+            "contract": "ReentrancyGuardUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:88"
+          },
+          {
+            "label": "totalCompetitions",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_uint256",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:36"
+          },
+          {
+            "label": "competitionMapping",
+            "offset": 0,
+            "slot": "202",
+            "type": "t_mapping(t_uint256,t_struct(Competition)4591_storage)",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:38"
+          },
+          {
+            "label": "calculatorMapping",
+            "offset": 0,
+            "slot": "203",
+            "type": "t_mapping(t_uint256,t_contract(ITicketCalculator)4545)",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:40"
+          },
+          {
+            "label": "totalTicketsMapping",
+            "offset": 0,
+            "slot": "204",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:41"
+          },
+          {
+            "label": "candidateMapping",
+            "offset": 0,
+            "slot": "205",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(Candidate)4558_storage))",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:43"
+          },
+          {
+            "label": "voterMapping",
+            "offset": 0,
+            "slot": "206",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_struct(Voter)4563_storage)))",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:46"
+          },
+          {
+            "label": "whiteCoins",
+            "offset": 0,
+            "slot": "207",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:48"
+          },
+          {
+            "label": "rewardIsWithdraw",
+            "offset": 0,
+            "slot": "208",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_bool))",
+            "contract": "CompetitionProtocol",
+            "src": "contracts/CompetitionProtocol.sol:50"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IERC20)2367": {
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_contract(ITicketCalculator)4545": {
+            "label": "contract ITicketCalculator",
+            "numberOfBytes": "20"
+          },
+          "t_enum(Mode)4553": {
+            "label": "enum CompetitionStruct.Mode",
+            "members": [
+              "NORMAL",
+              "SHARE",
+              "SHARE_PRO",
+              "PROPORTION"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_uint256,t_struct(Voter)4563_storage)))": {
+            "label": "mapping(address => mapping(uint256 => mapping(uint256 => struct CompetitionStruct.Voter)))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)34_storage)": {
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bool)": {
+            "label": "mapping(uint256 => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_contract(ITicketCalculator)4545)": {
+            "label": "mapping(uint256 => contract ITicketCalculator)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_bool))": {
+            "label": "mapping(uint256 => mapping(uint256 => bool))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(Candidate)4558_storage))": {
+            "label": "mapping(uint256 => mapping(uint256 => struct CompetitionStruct.Candidate))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_struct(Voter)4563_storage))": {
+            "label": "mapping(uint256 => mapping(uint256 => struct CompetitionStruct.Voter))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(Candidate)4558_storage)": {
+            "label": "mapping(uint256 => struct CompetitionStruct.Candidate)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(Competition)4591_storage)": {
+            "label": "mapping(uint256 => struct CompetitionStruct.Competition)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(Voter)4563_storage)": {
+            "label": "mapping(uint256 => struct CompetitionStruct.Voter)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Candidate)4558_storage": {
+            "label": "struct CompetitionStruct.Candidate",
+            "members": [
+              {
+                "label": "tickets",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "player",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Competition)4591_storage": {
+            "label": "struct CompetitionStruct.Competition",
+            "members": [
+              {
+                "label": "host",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "totalCoins",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "rewards",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "winners",
+                "type": "t_array(t_uint256)dyn_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "rewardCoin",
+                "type": "t_contract(IERC20)2367",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "ticketCoin",
+                "type": "t_contract(IERC20)2367",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "totalCandidates",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "6"
+              },
+              {
+                "label": "mode",
+                "type": "t_enum(Mode)4553",
+                "offset": 0,
+                "slot": "7"
+              },
+              {
+                "label": "proportionToPlayer",
+                "type": "t_uint64",
+                "offset": 1,
+                "slot": "7"
+              },
+              {
+                "label": "startTime",
+                "type": "t_uint64",
+                "offset": 9,
+                "slot": "7"
+              },
+              {
+                "label": "endTime",
+                "type": "t_uint64",
+                "offset": 17,
+                "slot": "7"
+              }
+            ],
+            "numberOfBytes": "256"
+          },
+          "t_struct(RoleData)34_storage": {
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "label": "members",
+                "type": "t_mapping(t_address,t_bool)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "adminRole",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Voter)4563_storage": {
+            "label": "struct CompetitionStruct.Voter",
+            "members": [
+              {
+                "label": "tickets",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "isWithdraw",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}
