@@ -39,14 +39,14 @@ contract DefaultCompetition is
     ReentrancyGuardUpgradeable,
     IBaseCompetition
 {
-    modifier OnlyHost(Structs.Competition storage competition) {
+    modifier onlyHost(Structs.Competition storage competition) {
         if (_msgSender() != competition.host) {
             revert NotHost();
         }
         _;
     }
 
-    modifier CompetitionOngoing(Structs.Competition storage competition) {
+    modifier ongoing(Structs.Competition storage competition) {
         if (
             competition.startTime > block.timestamp ||
             competition.endTime < block.timestamp
@@ -82,7 +82,7 @@ contract DefaultCompetition is
         uint256[] calldata rewards,
         uint64 startTime,
         uint64 endTime
-    ) external nonReentrant returns (uint256 id) {
+    ) external override virtual nonReentrant returns (uint256 id) {
         ++totalCompetitions;
         if (endTime <= block.timestamp) {
             revert InvalidTime();
@@ -122,7 +122,7 @@ contract DefaultCompetition is
     function setTicketCalculator(
         uint256 id,
         address calculator
-    ) external {
+    ) external override virtual{
         if (competitionMapping[id].startTime < block.timestamp) {
             revert CompetitionStarted();
         }
@@ -137,9 +137,9 @@ contract DefaultCompetition is
         uint256 id,
         address player
     )
-        external
-        OnlyHost(competitionMapping[id])
-        CompetitionOngoing(competitionMapping[id])
+        external override virtual
+        onlyHost(competitionMapping[id])
+        ongoing(competitionMapping[id])
         returns (uint256 candidateId)
     {
         candidateId = ++competitionMapping[id].totalCandidates;
@@ -154,7 +154,7 @@ contract DefaultCompetition is
         uint256 id,
         uint256 candidate,
         uint256 tickets
-    ) external nonReentrant CompetitionOngoing(competitionMapping[id]) {
+    ) external override virtual nonReentrant ongoing(competitionMapping[id]) {
         if (tickets < 1) {
             revert InvalidTickets();
         }
@@ -226,7 +226,7 @@ contract DefaultCompetition is
         uint256 id,
         uint256 candidate,
         address to
-    ) external nonReentrant {
+    ) external override virtual nonReentrant {
         Structs.Competition memory c = competitionMapping[id];
         if (block.timestamp <= c.endTime) {
             revert CompetitionNotEnd();
@@ -254,7 +254,7 @@ contract DefaultCompetition is
         uint256 id,
         uint256 candidate,
         address to
-    ) external nonReentrant {
+    ) external override virtual nonReentrant {
         Structs.Competition memory c = competitionMapping[id];
         if (block.timestamp <= c.endTime) {
             revert CompetitionNotEnd();
@@ -301,7 +301,7 @@ contract DefaultCompetition is
     )
         external
         view
-        override
+        override virtual
         returns (
             address host,
             uint256[] memory rewards,

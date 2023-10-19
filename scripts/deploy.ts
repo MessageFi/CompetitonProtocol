@@ -16,9 +16,9 @@ async function main() {
   const cp = await upgrades.deployProxy(CompetitionProtocol, []);
   console.log("CompetitionProtocol deployed to:", await cp.getAddress());
 
-  // const cpAddress: string = await cp.getAddress();
+  const cpAddress: string = await cp.getAddress();
   const OnchainHackson = await ethers.getContractFactory("OnchainHackson");
-  const hackson = await OnchainHackson.deploy("cpAddress");
+  const hackson = await OnchainHackson.deploy(cpAddress);
   await hackson.waitForDeployment();
   console.log("OnchainHackson deployed to:", await hackson.getAddress());
 
