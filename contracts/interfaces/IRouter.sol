@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
+// manage protocol, white coins and tellers
 interface IRouter{
     function protocolContrat(uint256 protocol) view external returns(address);
 

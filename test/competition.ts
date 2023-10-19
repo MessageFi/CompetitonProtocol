@@ -24,19 +24,20 @@ describe("Competition Protocol", function () {
         console.log("Reward20 deployed to:", await rc.getAddress());
 
 
-        const CompetitionProtocol = await ethers.getContractFactory("CompetitionProtocol");
+        const CompetitionProtocol = await ethers.getContractFactory("DefaultCompetition");
         const cp = await upgrades.deployProxy(CompetitionProtocol, []);
         console.log("CompetitionProtocol deployed to:", await cp.getAddress());
 
-        const tcAddress: string = await tc.getAddress();
-        const rcAddress: string = await rc.getAddress();
-        await cp.setWhiteCoin(tcAddress, true);
-        await cp.setWhiteCoin(rcAddress, true);
+        const cpAddress: string = await cp.getAddress();
+        const OnchainHackson = await ethers.getContractFactory("OnchainHackson");
+        const hackson = await OnchainHackson.deploy(cpAddress);
+        await hackson.waitForDeployment();
+        console.log("OnchainHackson deployed to:", await hackson.getAddress());
     
         // Contracts are deployed using the first signer/account by default
         const [owner, otherAccount] = await ethers.getSigners();
         
-        return { tc, rc, cp, owner, otherAccount };
+        return { tc, rc, cp, hackson, owner, otherAccount };
     }
 
     async function waitSecond(time: number): Promise<void> {
@@ -72,10 +73,41 @@ describe("Competition Protocol", function () {
             const rcAddress:string = await tc.getAddress();
             let numbers: number[] = [1e6, 5e5, 1e5];
             var transaction = await cp.create(tcAddress, rcAddress, numbers,
-                0, endTime, 0, 10000);
+                0, endTime);
             await printEvents("NewCompetition", cp, transaction);
 
             transaction = await cp.registerCandidate(1, owner);
+            await printEvents("NewCandidate", cp, transaction);
+
+            transaction = await cp.vote(1, 1, 10);
+            await printEvents("Vote", cp, transaction);
+
+            await waitSecond(6);
+
+            transaction = await cp.withdrawByPlayer(1, 1, owner);
+            await printEvents("WithdrawByPlayer", cp, transaction);
+            
+            transaction = await cp.withdrawByVoter(1, 1, owner);
+            await printEvents("WithdrawByVoter", cp, transaction);
+        });
+
+        it("Should start a hackson", async function () {
+            const { tc, rc, cp, hackson, owner } = await loadFixture(deployFixture);
+            
+            const cpAddress: string = await cp.getAddress();
+            const hacksonAddress: string = await hackson.getAddress();
+            const tcAddress:string = await tc.getAddress();
+            const rcAddress:string = await rc.getAddress();
+
+            await tc.approve(cpAddress, 1e9);
+            await rc.approve(hacksonAddress, 1e9);
+
+            // await rc.transfer(hacksonAddress, 1e6);
+
+            var transaction = await hackson.init(tcAddress, rcAddress, 5);
+            await printEvents("NewCompetition", cp, transaction);
+            
+            transaction = await hackson.register("CPT");
             await printEvents("NewCandidate", cp, transaction);
 
             transaction = await cp.vote(1, 1, 10);
