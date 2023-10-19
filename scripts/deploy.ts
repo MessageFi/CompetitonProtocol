@@ -1,26 +1,25 @@
 import { ethers, upgrades } from "hardhat";
 
 async function main() {
-  const WoodERC20 = await ethers.getContractFactory("WoodERC20");
-  const wood = await WoodERC20.deploy("Wood Coin", "Wood");
-  await wood.waitForDeployment();
-  console.log("WoodERC20 deployed to:", await wood.getAddress());
+  const Ticket20 = await ethers.getContractFactory("Ticket20");
+  const tc = await Ticket20.deploy();
+  await tc.waitForDeployment();
+  console.log("Ticket20 deployed to:", await tc.getAddress());
 
-  const LodgeERC721 = await ethers.getContractFactory("LodgeERC721");
-  const lodge = await upgrades.deployProxy(LodgeERC721, ["Lodge", "Lodge"]);
-  console.log("LodgeERC721 deployed to:", await lodge.getAddress());
+  const Reward20 = await ethers.getContractFactory("Reward20");
+  const rc = await Reward20.deploy();
+  await rc.waitForDeployment();
+  console.log("Reward20 deployed to:", await rc.getAddress());
 
-  const BeaverCommunity = await ethers.getContractFactory("BeaverCommunity");
-  const lodgeAddress: string = await lodge.getAddress();
-  const woodAddress: string = await wood.getAddress();
-  const community = await upgrades.deployProxy(BeaverCommunity, [lodgeAddress, woodAddress, 120]);
-  console.log("BeaverCommunity deployed to:", await community.getAddress());
 
-  const COMMUNITY_ROLE = await lodge.COMMUNITY_ROLE();
-  await lodge.grantRole(COMMUNITY_ROLE, community.getAddress());
+  const CompetitionProtocol = await ethers.getContractFactory("CompetitionProtocol");
+  const cp = await upgrades.deployProxy(CompetitionProtocol, []);
+  console.log("CompetitionProtocol deployed to:", await cp.getAddress());
 
-  await wood.mint(community.getAddress());
-
+  const tcAddress: string = await tc.getAddress();
+  const rcAddress: string = await rc.getAddress();
+  await cp.setWhiteCoin(tcAddress, true);
+  await cp.setWhiteCoin(rcAddress, true);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
