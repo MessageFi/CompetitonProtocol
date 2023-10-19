@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./structs/CompetitionStruct.sol";
 import "./interfaces/ICompetitionProtocol.sol";
-import "./interfaces/ITicketCalculator.sol";
+import "./interfaces/ITeller.sol";
 import "hardhat/console.sol";
 
 contract CompetitionProtocol is
@@ -37,7 +37,7 @@ contract CompetitionProtocol is
     // id => competition details
     mapping(uint256 => CompetitionStruct.Competition) public competitionMapping;
     // id => calculator
-    mapping(uint256 => ITicketCalculator) public calculatorMapping;
+    mapping(uint256 => ITeller) public calculatorMapping;
     mapping(uint256 => uint256) private totalTicketsMapping;
     // competition => candidate => details
     mapping(uint256 => mapping(uint256 => CompetitionStruct.Candidate))
@@ -118,7 +118,7 @@ contract CompetitionProtocol is
         if (!isCalculator(calculator)) {
             revert InvalidCalculator();
         }
-        calculatorMapping[id] = ITicketCalculator(calculator);
+        calculatorMapping[id] = ITeller(calculator);
     }
 
     function registerCandidate(
@@ -351,8 +351,8 @@ contract CompetitionProtocol is
 
 
     function isCalculator(address _address) public view returns (bool) {
-        // Check if the given address has the required ITicketCalculator functions
-        try ITicketCalculator(_address).calculateTickets(1) returns (uint256) {
+        // Check if the given address has the required ITeller functions
+        try ITeller(_address).calculateTickets(1) returns (uint256) {
             return true;
         } catch {
             return false;
