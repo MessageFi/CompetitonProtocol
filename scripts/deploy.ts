@@ -12,14 +12,16 @@ async function main() {
   console.log("Reward20 deployed to:", await rc.getAddress());
 
 
-  const CompetitionProtocol = await ethers.getContractFactory("CompetitionProtocol");
+  const CompetitionProtocol = await ethers.getContractFactory("DefaultCompetition");
   const cp = await upgrades.deployProxy(CompetitionProtocol, []);
   console.log("CompetitionProtocol deployed to:", await cp.getAddress());
 
-  const tcAddress: string = await tc.getAddress();
-  const rcAddress: string = await rc.getAddress();
-  await cp.setWhiteCoin(tcAddress, true);
-  await cp.setWhiteCoin(rcAddress, true);
+  // const cpAddress: string = await cp.getAddress();
+  const OnchainHackson = await ethers.getContractFactory("OnchainHackson");
+  const hackson = await OnchainHackson.deploy("cpAddress");
+  await hackson.waitForDeployment();
+  console.log("OnchainHackson deployed to:", await hackson.getAddress());
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
