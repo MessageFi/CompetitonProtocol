@@ -12,6 +12,8 @@ npx hardhat node
 npx hardhat run scripts/deploy.ts
 ```
 # Secret ballot
+
+generate proof:
 ```shell
 cd zokrates
 # install zokrates
