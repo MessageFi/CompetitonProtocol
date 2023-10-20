@@ -91,7 +91,7 @@ describe("Competition Protocol", function () {
             await printEvents("WithdrawByVoter", cp, transaction);
         });
 
-        it("Should start a hackson", async function () {
+        it("Should start an onchain hackson", async function () {
             const { tc, rc, cp, hackson, owner } = await loadFixture(deployFixture);
             
             const cpAddress: string = await cp.getAddress();

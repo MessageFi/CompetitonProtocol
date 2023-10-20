@@ -1,0 +1,11 @@
+def main(field[4] array, private field target) {
+    bool mut containsTarget = false;
+
+    for u32 i in 0..4 {
+        bool a = array[i] == target;
+        containsTarget = containsTarget || a;
+    }
+    assert(containsTarget);
+    return;
+}
+

@@ -1,0 +1,24 @@
+{
+  "inputs": [
+    {
+      "name": "array",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 4,
+        "type": "field"
+      }
+    },
+    {
+      "name": "target",
+      "public": false,
+      "type": "field"
+    }
+  ],
+  "output": {
+    "type": "tuple",
+    "components": {
+      "elements": []
+    }
+  }
+}
