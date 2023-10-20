@@ -20,7 +20,7 @@ cd zokrates
 curl -LSfs get.zokrat.es | sh
 # compile
 zokrates compile -i proof.zok
-# compute 3 is a member of array [1, 2, 3, 4]
+# compute 3 is a member of array [1, 2, 3, 4] you can prove the index of an address in an addresses' array
 zokrates compute-witness -a 1 2 3 4 3
 # generate proof
 zokrates generate-proof

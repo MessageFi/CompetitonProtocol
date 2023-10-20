@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import "../zokrates/verifier.sol";
+import "../../zokrates/verifier.sol";
 
 contract SecretBallot{
 

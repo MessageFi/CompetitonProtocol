@@ -122,7 +122,7 @@ contract DefaultCompetition is
     function setTicketCalculator(
         uint256 id,
         address calculator
-    ) external override virtual{
+    ) external override virtual nonReentrant{
         if (competitionMapping[id].startTime < block.timestamp) {
             revert CompetitionStarted();
         }
