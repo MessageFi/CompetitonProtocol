@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.17;
 
 import "../zokrates/verifier.sol";
 
@@ -37,11 +37,17 @@ contract SecretBallot{
 
     function vote(
         uint256 option,
-        uint256[4] memory input, 
-        Verifier.Proof memory proof
+        uint256[4] memory input,
+        uint[2] calldata proof_a,
+        uint[2][2] calldata proof_b,
+        uint[2] calldata proof_c
     ) external {
         require(block.timestamp > startTime && block.timestamp < endTime, "Not ongoing");
         require(option == options[0] || option == options[1], "Invalid option");
+        Verifier.Proof memory proof;
+        proof.a = Pairing.G1Point(proof_a[0], proof_a[1]);
+        proof.b = Pairing.G2Point(proof_b[0], proof_b[1]);
+        proof.c = Pairing.G1Point(proof_c[0], proof_c[1]);
         require(verifier.verifyTx(proof, input), "Verify Failed");
         bytes32 digest = keccak256(abi.encode(proof));
         require(!proofIsUsed[digest], "Proof is used");
