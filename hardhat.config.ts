@@ -2,7 +2,6 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import '@openzeppelin/hardhat-upgrades';
 import * as dotenv from 'dotenv';
-import "hardhat-circom";
 
 dotenv.config();
 const PRIVATE_KEY: string | undefined = process.env.PRIVATE_KEY;
@@ -29,15 +28,6 @@ const config: HardhatUserConfig = {
       url: `https://sepolia-rpc.scroll.io`,
       accounts: [PRIVATE_KEY]
     }
-  },
-  circom: {
-    inputBasePath: "./circuits",
-    ptau: "https://hermez.s3-eu-west-1.amazonaws.com/powersOfTau28_hez_final_15.ptau",
-    circuits: [
-      {
-        name: "quadratic",
-      },
-    ],
   },
 };
 
